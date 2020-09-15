@@ -1,4 +1,4 @@
-FROM php:7.4-cli-buster
+FROM ubuntu:18.04
 
 LABEL MAINTAINER Exakat, Damien Seguy, dseguy@exakat.io
 ENV EXAKAT_VERSION 2.1.7
@@ -9,13 +9,20 @@ ENV PATH="/usr/src/exakat/:${PATH}"
 COPY config/exakat.ini /usr/src/exakat/config/
 
 RUN \
+    apt-get update && \
+    apt-get -q -y install software-properties-common curl && \
+    add-apt-repository -y ppa:ondrej/php && \
+    apt-get update && \
+    apt-get -q -y install php7.4-cli php7.4-curl php7.4-mbstring php7.4-sqlite3 php5.6-cli php5.6-curl php5.6-mbstring php5.6-sqlite3 && \
     echo "====> Exakat $EXAKAT_VERSION" && \
     mkdir -p /usr/src/exakat && \
     cd /usr/src/exakat && \
     \
     echo "===> php.ini" && \
-    echo "memory_limit=-1" >> /usr/local/etc/php/php.ini && \
-    echo "zend.assertions=-1" >> /usr/local/etc/php/php.ini && \
+    echo "memory_limit=-1" >> /etc/php/5.6/cli/php.ini && \
+    echo "zend.assertions=-1" >> /etc/php/5.6/cli/php.ini && \
+    echo "memory_limit=-1" >> /etc/php/7.4/cli/php.ini && \
+    echo "zend.assertions=-1" >> /etc/php/7.4/cli/php.ini && \
     \
     echo "===> Java 8"  && \
     mkdir -p /usr/share/man/man1 && \
